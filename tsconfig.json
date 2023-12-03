@@ -1,0 +1,15 @@
+{
+    "include": [
+        "src/**/*"
+    ],
+    "compilerOptions": {
+        "composite": true,
+        "module": "CommonJS",
+        "esModuleInterop": true,
+        "types": [
+            "node"
+        ],
+        "rootDir": "src/",
+        "outDir": "dist/"
+    }
+}
