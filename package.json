@@ -15,6 +15,7 @@
     "types": "dist/plugin.d.ts",
     "files": [
         "dist",
+        "assets",
         "LICENSE"
     ],
     "scripts": {
