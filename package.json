@@ -1,7 +1,7 @@
 {
     "name": "vite-plugin-mediawiki-userscript",
     "description": "A Vite plugin for creating single-file MediaWiki userscript JavaScript files.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -13,7 +13,10 @@
     "homepage": "https://github.com/marco-prontera/vite-plugin-css-injected-by-js#readme",
     "main": "dist/plugin.js",
     "types": "dist/plugin.d.ts",
-    "files": [ "dist", "LICENSE" ],
+    "files": [
+        "dist",
+        "LICENSE"
+    ],
     "scripts": {
         "build": "tsc",
         "lint": "eslint . --fix --ignore-path .gitignore"
