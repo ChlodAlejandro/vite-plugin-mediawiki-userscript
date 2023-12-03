@@ -44,9 +44,11 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 							source, importer, isResolved
 						) || options.using?.includes( source );
 					};
-			} else {
+			} else if ( config.build.rollupOptions.external ) {
 				config.build.rollupOptions.external =
 					[ config.build.rollupOptions.external, ...options.using ?? [] ];
+			} else {
+				config.build.rollupOptions.external = options.using ?? [];
 			}
 
 			if ( !config.build.target ) {
@@ -97,7 +99,7 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 		},
 		configResolved( config ) {
 			getHook( cssPlugin.configResolved ).call( this, config );
-			console.log( config );
+			console.log( config.build.rollupOptions );
 		},
 		async generateBundle( opts, bundle, isWrite ) {
 			await getHook( cssPlugin.generateBundle ).call( this, opts, bundle, isWrite );
