@@ -5,12 +5,12 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/marco-prontera/vite-plugin-css-injected-by-js.git"
+        "url": "git@github.com:ChlodAlejandro/vite-plugin-mediawiki-userscript.git"
     },
     "bugs": {
-        "url": "https://github.com/marco-prontera/vite-plugin-css-injected-by-js/issues"
+        "url": "https://github.com/ChlodAlejandro/vite-plugin-mediawiki-userscript/issues"
     },
-    "homepage": "https://github.com/marco-prontera/vite-plugin-css-injected-by-js#readme",
+    "homepage": "https://github.com/ChlodAlejandro/vite-plugin-mediawiki-userscript",
     "main": "dist/plugin.js",
     "types": "dist/plugin.d.ts",
     "files": [
