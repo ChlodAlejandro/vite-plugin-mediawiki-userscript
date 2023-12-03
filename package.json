@@ -2,6 +2,7 @@
     "name": "vite-plugin-mediawiki-userscript",
     "description": "A Vite plugin for creating single-file MediaWiki userscript JavaScript files.",
     "version": "0.1.0",
+    "license": "MIT",
     "main": "dist/plugin.js",
     "types": "dist/plugin.d.ts",
     "scripts": {
