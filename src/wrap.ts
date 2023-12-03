@@ -11,12 +11,14 @@ export function wrap( options: PluginOptions, code: string ): string {
 	const header = options.banner
 		?.split( '\n' )
 		?.map( v => `// ${v}`.trim() )
-		?.join( '\n' ) ??
+		?.join( '\n' )
+		?.trimEnd() ??
 		'';
 	const footer = options.footer
 		?.split( '\n' )
 		?.map( v => `// ${v}`.trim() )
-		?.join( '\n' ) ??
+		?.join( '\n' )
+		?.trimStart() ??
 		'';
 
 	const processedTemplate = template
