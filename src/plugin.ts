@@ -99,7 +99,6 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 		},
 		configResolved( config ) {
 			getHook( cssPlugin.configResolved ).call( this, config );
-			console.log( config.build.rollupOptions );
 		},
 		async generateBundle( opts, bundle, isWrite ) {
 			await getHook( cssPlugin.generateBundle ).call( this, opts, bundle, isWrite );
