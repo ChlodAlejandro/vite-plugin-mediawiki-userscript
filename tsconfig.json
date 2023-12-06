@@ -1,6 +1,8 @@
 {
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "events.d.ts",
+        "./node_modules/types-mediawiki/**/*"
     ],
     "compilerOptions": {
         "composite": true,

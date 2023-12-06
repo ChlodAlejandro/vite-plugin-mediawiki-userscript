@@ -4,13 +4,22 @@ require( '@rushstack/eslint-patch/modern-module-resolution' );
 /** @type {import('eslint')} */
 module.exports = {
 	root: true,
-	'extends': [
-		'plugin:vue/vue3-essential',
+	parser: "@typescript-eslint/parser",
+	env: {
+		node: true
+	},
+	extends: [
+		"plugin:@typescript-eslint/recommended",
 		'eslint:recommended',
-		'@vue/eslint-config-typescript',
 		'wikimedia/common'
 	],
 	parserOptions: {
-		ecmaVersion: 'latest'
+		ecmaVersion: 'latest',
+		sourceType: 'module'
+	},
+	rules: {
+		"@typescript-eslint/no-explicit-any": "off",
+		"jsdoc/require-returns-type": "off",
+		"jsdoc/require-param-type": "off",
 	}
 };

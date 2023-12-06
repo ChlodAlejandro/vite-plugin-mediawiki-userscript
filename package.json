@@ -18,7 +18,11 @@
         "assets",
         "LICENSE"
     ],
+    "workspaces": [
+        "tests/projectA"
+    ],
     "scripts": {
+        "dev": "nodemon -w src/ -w assets/ -e ts,js,mjs -x \"tsc && npm run -w tests/projectA dev\"",
         "build": "tsc",
         "lint": "eslint . --fix --ignore-path .gitignore"
     },
@@ -29,10 +33,11 @@
         "@rushstack/eslint-patch": "^1.3.3",
         "@tsconfig/node18": "^18.2.2",
         "@types/node": "^18.18.5",
-        "@vue/eslint-config-typescript": "^12.0.0",
-        "@vue/tsconfig": "^0.4.0",
+        "@typescript-eslint/eslint-plugin": "^6.13.2",
+        "@typescript-eslint/parser": "^6.13.2",
         "eslint": "^8.49.0",
         "eslint-config-wikimedia": "^0.26.0",
+        "nodemon": "^3.0.2",
         "types-mediawiki": "^1.4.0",
         "typescript": "~5.2.0",
         "vite": "^4.4.11"
