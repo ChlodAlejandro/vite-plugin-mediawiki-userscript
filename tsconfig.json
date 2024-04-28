@@ -2,16 +2,15 @@
     "include": [
         "src/**/*",
         "events.d.ts",
-        "./node_modules/types-mediawiki/**/*"
+        "./node_modules/types-mediawiki/**/*",
     ],
     "compilerOptions": {
         "composite": true,
         "module": "CommonJS",
         "esModuleInterop": true,
-        "types": [
-            "node"
-        ],
+        "types": ["node"],
         "rootDir": "src/",
-        "outDir": "dist/"
-    }
+        "outDir": "dist/",
+        "target": "ESNext",
+    },
 }

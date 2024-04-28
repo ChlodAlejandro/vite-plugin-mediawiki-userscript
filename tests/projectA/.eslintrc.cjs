@@ -1,9 +1,8 @@
 /* eslint-env node */
 
-/** @type {import('eslint')} */
 module.exports = {
 	root: true,
-	'extends': [
+	extends: [
 		'plugin:vue/vue3-essential',
 		'eslint:recommended',
 		'@vue/eslint-config-typescript',
@@ -12,7 +11,5 @@ module.exports = {
 	parserOptions: {
 		ecmaVersion: 'latest'
 	},
-	ignorePatterns: [
-		'env.d.ts'
-	]
+	ignorePatterns: [ 'env.d.ts' ]
 };
