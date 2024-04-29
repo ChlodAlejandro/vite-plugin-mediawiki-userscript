@@ -1,9 +1,9 @@
 import { Plugin } from 'vite';
-import { PluginOptions } from './config';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-import { warn } from './warn';
-import { wrap } from './wrap';
 import MagicString from 'magic-string';
+import { PluginOptions } from './config.js';
+import { warn } from './warn.js';
+import { wrap } from './wrap.js';
 
 const EXTERN_PREFIX = '\0mw-userscript:';
 const IMPORT_REGEX =
