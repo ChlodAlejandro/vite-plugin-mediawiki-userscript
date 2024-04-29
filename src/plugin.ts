@@ -46,7 +46,9 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 					...( config.build.rollupOptions.external ?? [] ),
 					...externals
 				];
-			} else if ( config.build.rollupOptions.external instanceof Function ) {
+			} else if (
+				config.build.rollupOptions.external instanceof Function
+			) {
 				config.build.rollupOptions.external = (
 					source: string,
 					importer: string | undefined,
@@ -91,17 +93,21 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 				// Disable code splitting
 				if ( config.build.rollupOptions.output ) {
 					if ( Array.isArray( config.build.rollupOptions.output ) ) {
-						for ( const output of config.build.rollupOptions.output ) {
+						for ( const output of config.build.rollupOptions
+							.output ) {
 							if ( ![ 'cjs', 'commonjs' ].includes( output.format ) ) {
 								warn(
 									'One output file does not have a `cjs` format. It will not work on runtime!'
 								);
-								warn( '`mw.loader.using` only supports CommonJS imports.' );
+								warn(
+									'`mw.loader.using` only supports CommonJS imports.'
+								);
 							}
 							output.manualChunks = undefined;
 						}
 					} else {
-						config.build.rollupOptions.output.manualChunks = undefined;
+						config.build.rollupOptions.output.manualChunks =
+							undefined;
 					}
 				} else {
 					config.build.rollupOptions.output = {
@@ -113,7 +119,9 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 					// Indicate this as the entrypoint of our script
 					config.optimizeDeps.entries = [ options.entry ];
 				}
-				config.optimizeDeps.exclude = Array.isArray( config.optimizeDeps.exclude ) ?
+				config.optimizeDeps.exclude = Array.isArray(
+					config.optimizeDeps.exclude
+				) ?
 					[ ...config.optimizeDeps.exclude, ...externals ] :
 					externals;
 			}
@@ -143,10 +151,17 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 					code +=
 						'if (typeof __VUE_HMR_RUNTIME__ !== "object") {\n' +
 						'console.error("[vite-mw-userscript] ResourceLoader debug mode is not enabled. Without it, ' +
-						'RL will load the production version of Vue. Debug mode Vue is required for HMR to work.\\n\\n' +
-						'Add `?debug=2` to your URL or set a cookie `resourceLoaderDebug=2` to enable it. More information: ' +
-						'https://www.mediawiki.org/wiki/ResourceLoader/Architecture#Debug_mode");\n' +
-						'}\n';
+						'RL will load the production version of Vue. Debug mode Vue is required for HMR to work.\\n\\n';
+
+					if ( options.resourceLoaderDebugCookieAge ) {
+						code += `\`resourceLoaderDebugCookieAge\` is set to \`${options.resourceLoaderDebugCookieAge}\`, but Vue was loaded without it. Try reloading the page.`;
+					} else {
+						code +=
+							'Add `?debug=2` to your URL or set a cookie `resourceLoaderDebug=2` to enable it. More information: ' +
+							'https://www.mediawiki.org/wiki/ResourceLoader/Architecture#Debug_mode';
+					}
+					code += '");\n';
+					code += '}\n';
 				}
 
 				return code;
@@ -189,7 +204,12 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 			}
 		},
 		async generateBundle( opts, bundle, isWrite ) {
-			await getHook( cssPlugin.generateBundle ).call( this, opts, bundle, isWrite );
+			await getHook( cssPlugin.generateBundle ).call(
+				this,
+				opts,
+				bundle,
+				isWrite
+			);
 
 			for ( const file of Object.values( bundle ) ) {
 				if ( file.type === 'chunk' && file.isEntry ) {
