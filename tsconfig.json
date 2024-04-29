@@ -1,16 +1,18 @@
 {
-    "include": [
-        "src/**/*",
-        "events.d.ts",
-        "./node_modules/types-mediawiki/**/*",
-    ],
-    "compilerOptions": {
-        "composite": true,
-        "module": "CommonJS",
-        "esModuleInterop": true,
-        "types": ["node"],
-        "rootDir": "src/",
-        "outDir": "dist/",
-        "target": "ESNext",
-    },
+	"include": [
+		"src/**/*",
+		"events.d.ts",
+		"./node_modules/types-mediawiki/**/*",
+	],
+	"compilerOptions": {
+		"composite": true,
+		"module": "nodenext",
+		"esModuleInterop": true,
+		"types": ["node"],
+		"rootDir": "src/",
+		"outDir": "dist/",
+		"target": "ESNext",
+		"moduleResolution": "nodenext",
+		"skipLibCheck": true,
+	},
 }
