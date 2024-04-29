@@ -1,5 +1,4 @@
 export interface PluginOptions {
-
     /**
      * Name of this userscript. Used for the bundle name.
      */
@@ -61,4 +60,13 @@ export interface PluginOptions {
      */
     ignoreBuildOptions?: boolean;
 
+    /**
+     * max-age in seconds for the `resourceLoaderDebug` cookie. Falsy values
+     * will not set the cookie. Recommended: 60
+     *
+     * ResourceLoader debug mode is required to load the debug version of the Vue
+     * module. Debug mode Vue is required for HMR to work. Setting this property will
+     * cause the plugin to inject a `resourceLoaderDebug=2` cookie automatically.
+     */
+    resourceLoaderDebugCookieAge?: number;
 }

@@ -1,11 +1,16 @@
-import { createApp } from 'vue';
+import { createMwApp } from 'vue';
 import App from './App.vue';
+
+mw.messages.set( {
+	'testscript-clickme': 'Click me! Count: $1'
+} );
 
 if ( !document.getElementById( 'app' ) ) {
 	const appMount = document.createElement( 'div' );
 	appMount.setAttribute( 'id', 'app' );
-	document.querySelector( '#mw-content-text' )
+	document
+		.querySelector( '#mw-content-text' )
 		?.insertAdjacentElement( 'beforebegin', appMount );
 }
 
-createApp( App ).mount( '#app' );
+createMwApp( App ).mount( '#app' );

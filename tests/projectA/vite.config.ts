@@ -11,10 +11,8 @@ export default defineConfig( {
 		mediawikiUserscript( {
 			name: 'plugin-test',
 			entry: './src/main.ts',
-			using: [
-				'vue',
-				'@wikimedia/codex'
-			]
+			using: [ 'vue', '@wikimedia/codex' ],
+			resourceLoaderDebugCookieAge: 60
 		} ),
 		vue(),
 		inspect()

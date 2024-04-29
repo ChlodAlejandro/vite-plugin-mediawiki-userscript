@@ -4,7 +4,7 @@ import { PluginOptions } from './config';
 
 export function wrap( options: PluginOptions, code: string ): string {
 	const template = options.template ??
-		// eslint-disable-next-line no-undef,security/detect-non-literal-fs-filename
+
 		readFileSync( resolve( __dirname, '../assets/userscript.js' ) )
 			.toString( 'utf8' );
 

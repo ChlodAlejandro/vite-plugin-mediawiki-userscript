@@ -25,13 +25,13 @@ npm install --save-dev vite-plugin-mediawiki-userscript
 import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
 
 export default defineConfig({
-    plugins: [
-        mediawikiUserscript({
-            name: 'my-userscript-name',
-            entry: './src/main.ts'
-            // Configuration options
-        }),
-    ]
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts'
+			// Configuration options
+		}),
+	]
 });
 ```
 
@@ -47,16 +47,16 @@ bundled into MediaWiki.
 import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
 
 export default defineConfig({
-    plugins: [
-        mediawikiUserscript({
-            name: 'my-userscript-name',
-            entry: './src/main.ts',
-            using: [
-                'vue',
-                '@wikimedia/codex'
-            ]
-        }),
-    ]
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts',
+			using: [
+				'vue',
+				'@wikimedia/codex'
+			]
+		}),
+	]
 });
 ```
 
@@ -70,6 +70,53 @@ Note that you should avoid importing styles from these modules, such as
 loaded by MediaWiki. Importing these styles would only cause additional
 overhead.
 
+### Development usage
+
+In Vite's `serve` mode, any import statements containing modules in `using`
+will be automatically replaced with a `mw.loader.using()` call. You can add the
+following code to your `common.js` to load your script (see
+[Special:Diff/1220923810](https://en.wikipedia.org/w/index.php?diff=1220923810)
+for an example):
+
+```js
+function loadModule( src ) {
+	var e = document.createElement( 'script' );
+	e.setAttribute( 'type', 'module' );
+	e.setAttribute( 'src', src );
+	document.head.appendChild( e );
+}
+
+// Userscript development
+loadModule( 'http://localhost:5173/@vite/client' );
+loadModule( 'http://localhost:5173/src/main.ts' );
+```
+
+Note that Vue HMR is not included by default in the ResourceLoader module. You
+need to enable [ResourceLoader debug mode](https://www.mediawiki.org/wiki/ResourceLoader/Architecture#Debug_mode)
+to get the development build of Vue from ResourceLoader by adding `?debug=2` to
+the end of the URL (e.g. `https://en.wikipedia.org/wiki/Main_Page?debug=2`)
+or by setting a `resourceLoaderDebug=2` cookie. You can also use this plugin to
+automatically set this cookie, by changing the `resourceLoaderDebugCookieAge`
+to any truthy value (recommended is 60 seconds). This will inject the cookie for
+the specified seconds every time a RL module is loaded. Real builds will not be
+affected, this only applies in serve mode.
+```js
+import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
+
+export default defineConfig({
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts',
+
+			// automatically set the debug cookie for 60 seconds, see #Development usage
+			// default is null (don't set cookie)
+			resourceLoaderDebugCookieAge: 60
+		}),
+	]
+});
+```
+
 ### Output options
 
 You can apply a header and footer to the userscript by providing `header` and
@@ -79,14 +126,14 @@ respectively.
 import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
 
 export default defineConfig({
-    plugins: [
-        mediawikiUserscript({
-            name: 'my-userscript-name',
-            entry: './src/main.ts',
-            header: '// my-userscript, maintained by [[User:Chlod]]',
-            footer: '// end of script'
-        }),
-    ]
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts',
+			header: '// my-userscript, maintained by [[User:Chlod]]',
+			footer: '// end of script'
+		}),
+	]
 });
 ```
 
@@ -97,17 +144,17 @@ template to use.
 import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
 
 export default defineConfig({
-    plugins: [
-        mediawikiUserscript({
-            name: 'my-userscript-name',
-            entry: './src/main.ts',
-            template: `
-                mw.loader.using( 'dependencies', function ( require ) {
-                    // Userscript code
-                } );
-            `.trim()
-        }),
-    ]
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts',
+			template: `
+				mw.loader.using( 'dependencies', function ( require ) {
+					// Userscript code
+				} );
+			`.trim()
+		}),
+	]
 });
 ```
 
@@ -124,21 +171,21 @@ configuration you desire) and set the `ignoreBuildOptions` option to `true`.
 import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
 
 export default defineConfig({
-    plugins: [
-        mediawikiUserscript({
-            name: 'my-userscript-name',
-            entry: './src/main.ts',
-            build: {
-                lib: false
-            },
-            ignoreBuildOptions: true,
-            rollupOptions: {
-                output: {
-                    // ...
-                }
-            }
-        }),
-    ]
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts',
+			build: {
+				lib: false
+			},
+			ignoreBuildOptions: true,
+			rollupOptions: {
+				output: {
+					// ...
+				}
+			}
+		}),
+	]
 });
 ```
 
