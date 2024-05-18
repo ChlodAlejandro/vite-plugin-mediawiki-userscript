@@ -90,31 +90,6 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 					formats: [ 'cjs' ]
 				};
 
-				// Disable code splitting
-				if ( config.build.rollupOptions.output ) {
-					if ( Array.isArray( config.build.rollupOptions.output ) ) {
-						for ( const output of config.build.rollupOptions
-							.output ) {
-							if ( ![ 'cjs', 'commonjs' ].includes( output.format ) ) {
-								warn(
-									'One output file does not have a `cjs` format. It will not work on runtime!'
-								);
-								warn(
-									'`mw.loader.using` only supports CommonJS imports.'
-								);
-							}
-							output.manualChunks = undefined;
-						}
-					} else {
-						config.build.rollupOptions.output.manualChunks =
-							undefined;
-					}
-				} else {
-					config.build.rollupOptions.output = {
-						manualChunks: undefined
-					};
-				}
-
 				if ( !optimizeDepsEntries ) {
 					// Indicate this as the entrypoint of our script
 					config.optimizeDeps.entries = [ options.entry ];
