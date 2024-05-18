@@ -12,7 +12,7 @@ jobs:
             NODE_ENV: development
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v3
+                uses: actions/checkout@v4
             -   name: Setup Node
                 uses: actions/setup-node@v3
                 with:
@@ -44,7 +44,7 @@ jobs:
             PUPPETEER_PRODUCT: ${{ matrix.product }}
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v3
+                uses: actions/checkout@v4
             -   name: Setup Node
                 uses: actions/setup-node@v3
                 with:
@@ -68,7 +68,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             -   name: Checkout code
-                uses: actions/checkout@v3
+                uses: actions/checkout@v4
             -   name: Setup Node
                 uses: actions/setup-node@v3
                 with:
