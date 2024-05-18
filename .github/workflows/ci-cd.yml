@@ -1,0 +1,86 @@
+name: CI/CD
+
+on:
+    push:
+    pull_request:
+
+jobs:
+    build:
+        name: Build
+        runs-on: ubuntu-latest
+        env:
+            NODE_ENV: development
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v3
+            -   name: Setup Node
+                uses: actions/setup-node@v3
+                with:
+                    node-version: '20.x'
+                    registry-url: 'https://registry.npmjs.org'
+            -   name: Install dependencies
+                run: npm ci
+            -   name: Build
+                run: npm run build
+                env:
+                    NODE_ENV: production
+            -   name: Upload dist files
+                uses: actions/upload-artifact@v4
+                with:
+                    name: dist
+                    path: dist/*
+
+    test:
+        name: Test
+        # TODO: We don't have tests yet.
+        if: ${{ false }}
+        runs-on: ubuntu-latest
+        strategy:
+            fail-fast: true
+            matrix:
+                product: [ 'chrome', 'firefox' ]
+        env:
+            NODE_ENV: test
+            PUPPETEER_PRODUCT: ${{ matrix.product }}
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v3
+            -   name: Setup Node
+                uses: actions/setup-node@v3
+                with:
+                    node-version: '20.x'
+                    registry-url: 'https://registry.npmjs.org'
+            -   name: Install dependencies
+                run: npm ci
+            -   name: Download dist files
+                uses: actions/download-artifact@v4
+                with:
+                    name: dist
+            -   name: Perform tests
+                run: npm test
+
+    deploy:
+        name: Publish (npm)
+        needs: build
+        if: ${{ startsWith( github.ref, 'refs/tags/v' ) }}
+        environment: npm
+
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout code
+                uses: actions/checkout@v3
+            -   name: Setup Node
+                uses: actions/setup-node@v3
+                with:
+                    node-version: '20.x'
+                    registry-url: 'https://registry.npmjs.org'
+            -   name: Install dependencies
+                run: npm ci
+            -   name: Download dist files
+                uses: actions/download-artifact@v4
+                with:
+                    name: dist
+            -   name: Publish
+                run: npm publish
+                env:
+                    NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_KEY }}

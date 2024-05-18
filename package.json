@@ -26,7 +26,8 @@
 		"dev": "nodemon -w src/ -w assets/ -e ts,js,mjs -x \"tsc && npm run -w tests/projectA dev\"",
 		"build": "tsc",
 		"clean": "rm -rf dist tsconfig.tsbuildinfo",
-		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+		"lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
+		"lint:fix": "npm run lint --fix",
 		"prepack": "npm run lint && npm run clean && npm run build"
 	},
 	"dependencies": {
