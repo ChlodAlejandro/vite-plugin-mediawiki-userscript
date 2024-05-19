@@ -9,6 +9,7 @@ const EXTERN_PREFIX = '\0mw-userscript:';
 const IMPORT_REGEX =
 	/import ({[^}]+}) from "\/@id\/__x00__mw-userscript:[^"]+";/dg;
 const AS_REGEX = / as /dg;
+const DYNAMIC_IMPORT_CJS_REGEX = /import\(.+?\.(c)js["']\s?\)/dg;
 export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 	const externals = Array.from( options.using ?? [] );
 	if ( externals.includes( 'vue' ) ) {
@@ -32,6 +33,9 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 	}
 
 	const importers = new Set<string>();
+
+	// ensure trailing slash
+	options.baseUrl = options.baseUrl ? options.baseUrl.replace( /\/?$/, '/' ) : '';
 
 	return {
 		enforce: 'pre',
@@ -71,6 +75,15 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 				config.build.rollupOptions.external = externals;
 			}
 
+			if ( options.esmChunks ) {
+				config.build.rollupOptions.output = {
+					...config.build.rollupOptions.output,
+
+					chunkFileNames: '[name].js',
+					minifyInternalExports: false
+				};
+			}
+
 			config.build.target ??= 'es6';
 			config.build.cssCodeSplit ??= true;
 
@@ -89,6 +102,10 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 					fileName: options.name,
 					formats: [ 'cjs' ]
 				};
+
+				if ( options.esmChunks ) {
+					config.build.lib.formats.push( 'es' );
+				}
 
 				if ( !optimizeDepsEntries ) {
 					// Indicate this as the entrypoint of our script
@@ -186,11 +203,73 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 				isWrite
 			);
 
-			for ( const file of Object.values( bundle ) ) {
+			for ( const [ name, file ] of Object.entries( bundle ) ) {
 				if ( file.type === 'chunk' && file.isEntry ) {
 					file.code = wrap( options, file.code );
 				}
+				if ( options.esmChunks && file.type === 'chunk' ) {
+					if ( ( opts.format === 'cjs' && !file.isEntry ) || ( opts.format === 'es' && file.isEntry ) ) {
+						delete bundle[ name ];
+					}
+				}
+			}
+		},
+
+		// esm hackery
+		renderDynamicImport() {
+			if ( options.esmChunks ) {
+				return { left: `import(${ JSON.stringify( options.baseUrl ) } + `, right: ')' };
+			}
+		},
+		renderChunk: ( code, chunk, { format }, { chunks } ) => {
+			if ( format !== 'cjs' || !options.esmChunks ) {
+				return;
+			}
+			if ( chunk.name === 'main' ) {
+				const s = new MagicString( code );
+				const matches = code.matchAll( DYNAMIC_IMPORT_CJS_REGEX );
+				for ( const match of matches ) {
+					// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+					const [ _, [ start, end ] ] = match.indices;
+					s.remove( start, end );
+				}
+
+				if ( Array.isArray( options.esmUnhoistChunks ) ) {
+					// remove hoisted require( './chunk.xyz.js' )
+					const removeChunks = Object.entries( chunks )
+					// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+						.filter( ( [ _, c ] ) => options.esmUnhoistChunks.includes( c.name ) )
+						.map( ( [ n ] ) => n );
+
+					for ( const chunkName of removeChunks ) {
+						if ( chunk.importedBindings[ chunkName ].length !== 0 ) {
+							throw new Error( `${chunkName} imports are being used!` );
+						}
+
+						delete chunk.importedBindings[ chunkName ];
+					}
+					chunk.imports = chunk.imports.filter( ( i ) => !removeChunks.includes( i ) );
+
+					const searchStrings = removeChunks.map( c => `require('./${ c }');\n` );
+
+					for ( const searchString of searchStrings ) {
+						let idx = code.indexOf( searchString );
+						if ( idx === -1 ) {
+							throw new Error( `\`${searchString}\` not found!` );
+						}
+
+						while ( idx !== -1 ) {
+							s.remove( idx, idx + searchString.length );
+							idx = code.indexOf( searchString, idx + 1 );
+						}
+					}
+				}
+				return {
+					code: s.toString(),
+					map: s.generateMap()
+				};
 			}
 		}
+
 	};
 }
