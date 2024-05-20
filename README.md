@@ -189,6 +189,81 @@ export default defineConfig({
 });
 ```
 
+### Code splitting
+You can use ESM modules and dynamic imports in order to split your userscript
+into lazy-loadable chunks. To do this, enable the `esmChunks` option in the plugin
+config. This will cause your entrypoint to still be CJS and compatible with
+ResourceLoader, but still preserves any dynamic imports in your userscript. Chunks
+will be emitted as ESM modules. You can set the `baseUrl` option to configure a
+prefix for where your chunks will be served from.
+
+> [!WARNING]
+> Any imports that you use from external deps must be either placed into
+> your main entrypoint, or imported using a dynamic import. See below for an exception
+> to using static imports.
+```js
+import mediawikiUserscript from 'vite-plugin-mediawiki-userscript';
+
+export default defineConfig({
+	plugins: [
+		mediawikiUserscript({
+			name: 'my-userscript-name',
+			entry: './src/main.ts',
+
+			esmChunks: true,
+			baseUrl: `https://tools-static.wmflabs.org/ultraviolet/builds/${process.env.CI_COMMIT_SHA}/`,
+		}),
+	]
+});
+```
+
+#### Static imports for side effects
+If you have a library (e.g. a web component library) that is only imported for
+side effects (i.e. none of its exports are used), you can use static imports, and
+dynamically import any part of the chunk before your code that needs it is loaded.
+
+For example, [Ultraviolet](https://gitlab.wikimedia.org/repos/10nm/ultraviolet)
+uses the [@material/web](https://github.com/material-components/material-web)
+library for components, which are imported as needed in UI code. Ultraviolet
+calls `import( '@material/web/button/filled-button' )` as part of its init function,
+so that the entire bundle is loaded before and UI code uses it.
+
+This would work:
+```vue
+<template>
+	<md-filled-button @click="counter++">
+		{{ counter }}
+	</md-filled-button>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import '@material/web/button/filled-button.js';
+
+const counter = ref( 0 );
+</script>
+```
+
+This wouldn't:
+```vue
+<template>
+	<MdFilledButton @click="counter++">
+		{{ counter }}
+	</MdFilledButton>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import MdFilledButton from '@material/web/button/filled-button.js';
+
+const counter = ref( 0 );
+</script>
+```
+
+Make sure to add the chunk name to the `esmUnhoistChunks` option for the plugin.
+This will ensure that any hoisted `require()`s that rollup generates will be
+removed from the final bundle.
+
 # License
 Copyright 2023 Chlod Alejandro
 
