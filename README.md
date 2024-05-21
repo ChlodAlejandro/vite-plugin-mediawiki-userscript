@@ -265,7 +265,7 @@ This will ensure that any hoisted `require()`s that rollup generates will be
 removed from the final bundle.
 
 # License
-Copyright 2023 Chlod Alejandro
+Copyright 2023 Chlod Alejandro, sportshead
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
