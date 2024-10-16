@@ -7,7 +7,7 @@ import { wrap } from './wrap.js';
 
 const EXTERN_PREFIX = '\0mw-userscript:';
 const IMPORT_REGEX =
-	/import ({[^}]+}) from "\/@id\/__x00__mw-userscript:[^"]+";/dg;
+	/import ({[^}]+}) from "\/@id\/__x00__mw-userscript:[^"]+";?/dg;
 const AS_REGEX = / as /dg;
 const DYNAMIC_IMPORT_CJS_REGEX = /import\(.+?\.(c)js["']\s?\)/dg;
 export default function mediawikiUserscript( options: PluginOptions ): Plugin {
@@ -172,7 +172,9 @@ export default function mediawikiUserscript( options: PluginOptions ): Plugin {
 				for ( const match of matches ) {
 					// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 					const [ [ _, end ], [ clauseStart, clauseEnd ] ] = match.indices;
-					s.appendLeft( end, 'const ' );
+
+					// semicolon in case import statement is emitted without one
+					s.appendLeft( end, ';const ' );
 					s.appendLeft( clauseEnd, ` = __mw_module${counter};` );
 					s.appendLeft( clauseStart, `__mw_module${counter}` );
 
