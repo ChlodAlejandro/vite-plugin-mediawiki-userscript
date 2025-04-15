@@ -24,6 +24,11 @@ export default defineConfig( {
 	},
 	server: {
 		hmr: true,
-		strictPort: true
+		strictPort: true,
+		// You should always set these two configuration options to a specific set of domains!
+		allowedHosts: true,
+		headers: {
+			"Access-Control-Allow-Origin": "*"
+		}
 	}
 } );

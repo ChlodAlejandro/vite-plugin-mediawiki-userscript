@@ -45,6 +45,6 @@
 		"nodemon": "^3.0.2",
 		"types-mediawiki": "^1.4.0",
 		"typescript": "~5.2.0",
-		"vite": "^4.4.11"
+		"vite": "^6.2.6"
 	}
 }
